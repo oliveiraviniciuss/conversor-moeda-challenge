@@ -1,12 +1,12 @@
 const { httpStatus } = require('../helpers/httpResponses')
 const axios = require('axios')
 
-const getQuotation = async (req, res) => {
+const getConversion = async (req, res) => {
     try {
 
         const price = req.query.price
-        const currencies = req.query.currencies
-        const validCurrenciesArr = getValidCurrenciesData(currencies)
+        const paramsCurrencies = req.query.currencies
+        const validCurrenciesArr = getValidCurrenciesArr(paramsCurrencies)
         const currenciesQuotations = await getQuotationFromExternalApi(validCurrenciesArr)
         
         const convertedPrice = getPricesFromQuotationsResponse(price, currenciesQuotations, validCurrenciesArr)  
@@ -18,27 +18,28 @@ const getQuotation = async (req, res) => {
     }
 }
 
-const getQuotationFromExternalApi = async (currencies) => {
+const getQuotationFromExternalApi = async (validatedCurrencies) => {
 
-    const validCurrenciesStr = getValidCurrenciesString(currencies)
+    const validCurrenciesStr = getValidCurrenciesString(validatedCurrencies)
     const url = getUrlToRequest(process.env.BASE_URL, validCurrenciesStr)
     response = await axios.get(url);
     return response.data
 }
 
-const getValidCurrenciesData = (currencies) => {
-    const validCurrencies = ["EUR", "USD", "INR"]
-    const receivedCurrenciesArr = currencies.toUpperCase().split(',')
+const getValidCurrenciesArr = (paramsCurrencies) => {
+    const acceptedCurrencies = ["EUR", "USD", "INR"]
     const validatedCurrenciesArr = []
+    const receivedCurrenciesArr = paramsCurrencies.toUpperCase().split(',')
+    
     for (const currency of receivedCurrenciesArr) {
-        const obj = {
+        const currencyObj = {
             currency: currency, 
             valid: false
         }
-        if (validCurrencies.includes(currency)){
-           obj.valid = true
+        if (acceptedCurrencies.includes(currency)){
+            currencyObj.valid = true
         }
-        validatedCurrenciesArr.push(obj)
+        validatedCurrenciesArr.push(currencyObj)
     }
     return validatedCurrenciesArr
 }
@@ -74,9 +75,9 @@ const getValidCurrenciesString = (currenciesObjArr) => {
 }
 
 const getUrlToRequest = (baseUrl, currencies) => {
-    return baseUrl + currencies
+    return `${baseUrl}${currencies}`
 }
 
 module.exports = {
-    getQuotation
+    getConversion
 }

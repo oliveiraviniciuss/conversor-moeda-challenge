@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const app = express();
 
-const quotation = require('./routes/quotation')
+const conversion = require('./routes/conversion')
 
-app.use('/quotation', quotation);
+app.use('/conversion', conversion);
 
 module.exports = app

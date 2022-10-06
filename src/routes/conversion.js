@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
 const { validate } = require('../middlewares/controller_validation');
-const quotationService = require('../service/quotationService')
+const conversionService = require('../service/conversionService')
 
 router
     .route('/')
@@ -11,7 +11,7 @@ router
             price: Joi.number().positive().required(),
             currencies: Joi.string().required()
         }),
-        quotationService.getQuotation
+        conversionService.getConversion
     )
 
 module.exports = router

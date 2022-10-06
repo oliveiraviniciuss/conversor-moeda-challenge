@@ -7,7 +7,7 @@ const getQuotation = async (req, res) => {
         const price = req.query.price
         const currencies = req.query.currencies
         const convertedPrices = await convertedValues(price, currencies)  
-
+        
         return res.send(convertedPrices)
     }
     catch (error) {
@@ -18,10 +18,43 @@ const getQuotation = async (req, res) => {
 
 const convertedValues = async (price, currencies) => {
 
-    response = await axios.get(process.env.BASE_URL);
+    const validCurrenciesArr = getValidCurrenciesData(currencies)
+    const validCurrenciesStr = getValidCurrenciesString(validCurrenciesArr)
+    const url = getUrlToRequest(process.env.BASE_URL, validCurrenciesStr)
+    response = await axios.get(url);
     return response.data
 }
 
+const getValidCurrenciesData = (currencies) => {
+    const validCurrencies = ["EUR", "USD", "INR"]
+    const receivedCurrenciesArr = currencies.toUpperCase().split(',')
+    const validatedCurrenciesArr = []
+    for (const currency of receivedCurrenciesArr) {
+        const obj = {
+            currency: currency, 
+            valid: false
+        }
+        if (validCurrencies.includes(currency)){
+           obj.valid = true
+        }
+        validatedCurrenciesArr.push(obj)
+    }
+    return validatedCurrenciesArr
+}
+
+const getValidCurrenciesString = (currenciesObjArr) => {
+    const validCurrenciesArr = []
+    for (obj of currenciesObjArr){
+        if (obj.valid){
+            validCurrenciesArr.push(obj.currency)
+        }
+    }
+    return validCurrenciesArr.join(',')
+}
+
+const getUrlToRequest = (baseUrl, currencies) => {
+    return baseUrl + currencies
+}
 
 module.exports = {
     getQuotation

@@ -8,7 +8,8 @@ router
     .route('/')
     .get(
         validate('query', {
-            price: Joi.string().required()
+            price: Joi.number().positive().required(),
+            currencies: Joi.string().required()
         }),
         quotationService.getQuotation
     )

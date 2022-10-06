@@ -6,9 +6,11 @@ const getQuotation = async (req, res) => {
 
         const price = req.query.price
         const currencies = req.query.currencies
-        const convertedPrices = await convertedValues(price, currencies)  
+        const validCurrenciesArr = getValidCurrenciesData(currencies)
+        const currenciesQuotations = await getQuotationFromExternalApi(validCurrenciesArr)
         
-        return res.send(convertedPrices)
+        const convertedPrice = getPricesFromQuotationsResponse(price, currenciesQuotations, validCurrenciesArr)  
+        return res.send(convertedPrice)
     }
     catch (error) {
         console.log('quotationService --- getQuitation --- error: ', error)
@@ -16,10 +18,9 @@ const getQuotation = async (req, res) => {
     }
 }
 
-const convertedValues = async (price, currencies) => {
+const getQuotationFromExternalApi = async (currencies) => {
 
-    const validCurrenciesArr = getValidCurrenciesData(currencies)
-    const validCurrenciesStr = getValidCurrenciesString(validCurrenciesArr)
+    const validCurrenciesStr = getValidCurrenciesString(currencies)
     const url = getUrlToRequest(process.env.BASE_URL, validCurrenciesStr)
     response = await axios.get(url);
     return response.data
@@ -40,6 +41,26 @@ const getValidCurrenciesData = (currencies) => {
         validatedCurrenciesArr.push(obj)
     }
     return validatedCurrenciesArr
+}
+
+
+const getPricesFromQuotationsResponse = (price, externalApiResponse, validCurrenciesArr) => {
+    const newResponse = {
+        invalidParams: []
+    }
+    for (obj of validCurrenciesArr){
+        apiCurrencyFormat = `${obj.currency}BRL`
+        if (obj.valid && externalApiResponse[apiCurrencyFormat]){
+            currencyObj = {
+                price: (price * externalApiResponse[apiCurrencyFormat].high).toFixed(2)
+            }
+            newResponse[obj.currency] = currencyObj
+        }
+        else {
+            newResponse.invalidParams.push(obj.currency)
+        }
+    }
+    return newResponse
 }
 
 const getValidCurrenciesString = (currenciesObjArr) => {

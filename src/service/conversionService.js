@@ -1,9 +1,9 @@
 const { httpStatus } = require('../helpers/httpResponses')
-const axios = require('axios')
+const { httpGet } = require('../service/httpRequests')
+const cacheService =  require('../service/cacheService')
 
 const getConversion = async (req, res) => {
     try {
-
         const price = req.query.price
         const paramsCurrencies = req.query.currencies
         const validCurrenciesArr = getValidCurrenciesArr(paramsCurrencies)
@@ -19,11 +19,10 @@ const getConversion = async (req, res) => {
 }
 
 const getQuotationFromExternalApi = async (validatedCurrencies) => {
-
     const validCurrenciesStr = getValidCurrenciesString(validatedCurrencies)
     const url = getUrlToRequest(process.env.BASE_URL, validCurrenciesStr)
-    response = await axios.get(url);
-    return response.data
+    const response = await getQuotationValues(url, validCurrenciesStr)  
+    return response
 }
 
 const getValidCurrenciesArr = (paramsCurrencies) => {
@@ -44,18 +43,20 @@ const getValidCurrenciesArr = (paramsCurrencies) => {
     return validatedCurrenciesArr
 }
 
-
 const getPricesFromQuotationsResponse = (price, externalApiResponse, validCurrenciesArr) => {
+    const COMMON_KEY_SUFFIX = 'BRL'
     const newResponse = {
         invalidParams: []
     }
+    
     for (obj of validCurrenciesArr){
-        apiCurrencyFormat = `${obj.currency}BRL`
+        apiCurrencyFormat = `${obj.currency}${COMMON_KEY_SUFFIX}`
         if (obj.valid && externalApiResponse[apiCurrencyFormat]){
-            currencyObj = {
-                price: (price * externalApiResponse[apiCurrencyFormat].high).toFixed(2)
+            const currencyObj = {
+                price: (price * externalApiResponse[apiCurrencyFormat]?.high)
             }
             newResponse[obj.currency] = currencyObj
+            cacheService.setCacheIfNotExists(apiCurrencyFormat, valueToStoreInCache(externalApiResponse, apiCurrencyFormat))
         }
         else {
             newResponse.invalidParams.push(obj.currency)
@@ -74,9 +75,24 @@ const getValidCurrenciesString = (currenciesObjArr) => {
     return validCurrenciesArr.join(',')
 }
 
+const getQuotationValues = async (url, validCurrenciesStr) => {
+    const COMMON_KEY_SUFFIX = 'BRL'
+    const cacheKey = `${validCurrenciesStr}${COMMON_KEY_SUFFIX}`
+    let response = cacheService.getCache(cacheKey)
+     if (!response) {
+        response =  (await httpGet(url)).data
+        cacheService.setCache(cacheKey, response)
+    }
+    return response
+}
+
 const getUrlToRequest = (baseUrl, currencies) => {
     return `${baseUrl}${currencies}`
 }
+
+const valueToStoreInCache = (externalApiResponse, apiCurrencyFormat) => {
+    return {[apiCurrencyFormat]: externalApiResponse[apiCurrencyFormat]}
+}   
 
 module.exports = {
     getConversion

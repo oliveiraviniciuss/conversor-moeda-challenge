@@ -7,6 +7,7 @@ const joiValidate = (type, params) => {
     });
 };
 
+
 module.exports = {
     joiValidate,
 };

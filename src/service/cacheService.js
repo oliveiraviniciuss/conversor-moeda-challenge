@@ -1,5 +1,5 @@
-const nodeCache = require('node-cache')
-const cacheClient = new nodeCache()
+const NodeCache = require('node-cache')
+const cacheClient = new NodeCache()
 
 const setCache = (key, val) => {
   const ttl = process.env.CACHE_TTL

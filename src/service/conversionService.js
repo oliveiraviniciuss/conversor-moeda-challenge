@@ -1,18 +1,19 @@
 const { httpStatus } = require('../helpers/httpResponses')
 const { httpGet } = require('../service/httpRequests')
 const cacheService = require('../service/cacheService')
+const logger = require('../service/logger')
 
 const getConversion = async (req, res) => {
   try {
+    logger.info('conversionService - getConversion')
     const price = req.query.price
     const paramsCurrencies = req.query.currencies
     const validCurrenciesArr = getValidCurrenciesArr(paramsCurrencies)
     const currenciesQuotations = await getQuotationFromExternalApi(validCurrenciesArr)
-
     const convertedPrice = getPricesFromQuotationsResponse(price, currenciesQuotations, validCurrenciesArr)
     return res.send(convertedPrice)
   } catch (error) {
-    console.log('quotationService --- getQuitation --- error: ', error)
+    logger.error('conversionService --- getConversion --- error: ', error)
     return res.status(500).send(httpStatus[500])
   }
 }

@@ -1,4 +1,5 @@
-const app = require('./server')
+const app = require('../src/routes/routes')
+
 require('dotenv').config()
 
 const port = process.env.PORT || 3001

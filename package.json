@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/jest",
+    "test": "NODE_ENV=test jest",
     "start": "nodemon src/index.js",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint ./src ./tests --ext .js --fix"

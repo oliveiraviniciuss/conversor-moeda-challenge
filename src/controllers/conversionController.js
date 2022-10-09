@@ -1,7 +1,7 @@
 const { httpStatus } = require('../helpers/httpResponses')
-const { httpGet } = require('../service/httpRequests')
-const cacheService = require('../service/cacheService')
-const logger = require('../service/logger')
+const { httpGet } = require('./httpRequestsController')
+const cacheService = require('./cacheController')
+const logger = require('./loggerController')
 
 const getConversion = async (req, res) => {
   try {

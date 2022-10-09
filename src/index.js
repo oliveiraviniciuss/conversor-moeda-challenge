@@ -1,5 +1,5 @@
 const app = require('../src/routes/routes')
-const logger = require('../src/service/logger')
+const logger = require('./controllers/loggerController')
 
 require('dotenv').config()
 

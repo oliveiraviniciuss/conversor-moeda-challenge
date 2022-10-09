@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
-const { validate } = require('../middlewares/controller_validation')
-const conversionService = require('../service/conversionService')
+const { validate } = require('../middlewares/controllerValidation')
+const conversionService = require('../controllers/conversionController')
 
 router
   .route('/')

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const healthCheckService = require('../service/healthCheckService')
+const healthCheckService = require('../controllers/healthCheckController')
 
 router
   .route('/')

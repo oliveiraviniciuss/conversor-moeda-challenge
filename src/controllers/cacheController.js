@@ -2,7 +2,7 @@ const NodeCache = require('node-cache')
 const cacheClient = new NodeCache()
 const logger = require('../controllers/loggerController')
 
-const setCache = (key, val) => {
+const setCache = async (key, val) => {
   try {
     logger.info('cacheController -- setCache')
     const ttl = process.env.CACHE_TTL
@@ -13,7 +13,7 @@ const setCache = (key, val) => {
   }
 }
 
-const getCache = (key) => {
+const getCache = async (key) => {
   try {
     logger.info('cacheController -- getCache')
     return cacheClient.get(key)
@@ -23,7 +23,7 @@ const getCache = (key) => {
   }
 }
 
-const setCacheIfNotExists = (key, val) => {
+const setCacheIfNotExists = async (key, val) => {
   logger.info('cacheController -- setCacheIfNotExists')
   try {
     const response = getCache(key)

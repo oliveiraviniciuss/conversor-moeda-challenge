@@ -10,7 +10,7 @@ const getConversion = async (req, res) => {
     const paramsCurrencies = req.query.currencies
     const validCurrenciesArr = getValidCurrenciesArr(paramsCurrencies)
     const currenciesQuotations = await getQuotationFromExternalApi(validCurrenciesArr)
-    const convertedPrice = getPricesFromQuotationsResponse(price, currenciesQuotations, validCurrenciesArr)
+    const convertedPrice = await getPricesFromQuotationsResponse(price, currenciesQuotations, validCurrenciesArr)
     return res.send(convertedPrice)
   } catch (error) {
     logger.error('conversionController --- getConversion --- error: ', error)
@@ -49,7 +49,7 @@ const getValidCurrenciesArr = (paramsCurrencies) => {
   }
 }
 
-const getPricesFromQuotationsResponse = (price, externalApiResponse, validCurrenciesArr) => {
+const getPricesFromQuotationsResponse = async (price, externalApiResponse, validCurrenciesArr) => {
   logger.info('getPricesFromQuotationsResponse - getValidCurrenciesArr')
   try {
     const COMMON_KEY_SUFFIX = 'BRL'
@@ -64,7 +64,7 @@ const getPricesFromQuotationsResponse = (price, externalApiResponse, validCurren
           price: (price * externalApiResponse[apiCurrencyFormat]?.high)
         }
         newResponse[obj.currency] = currencyObj
-        cacheService.setCacheIfNotExists(apiCurrencyFormat, valueToStoreInCache(externalApiResponse, apiCurrencyFormat))
+        await cacheService.setCacheIfNotExists(apiCurrencyFormat, valueToStoreInCache(externalApiResponse, apiCurrencyFormat))
       } else {
         newResponse.invalidParams.push(obj.currency)
       }
@@ -89,10 +89,10 @@ const getValidCurrenciesString = (currenciesObjArr) => {
 const getQuotationValues = async (url, validCurrenciesStr) => {
   const COMMON_KEY_SUFFIX = 'BRL'
   const cacheKey = `${validCurrenciesStr}${COMMON_KEY_SUFFIX}`
-  let response = cacheService.getCache(cacheKey)
+  let response = await cacheService.getCache(cacheKey)
   if (!response) {
     response = (await httpGet(url)).data
-    cacheService.setCache(cacheKey, response)
+    await cacheService.setCache(cacheKey, response)
   }
   return response
 }

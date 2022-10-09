@@ -6,7 +6,6 @@ const getHealthCheck = async (req, res) => {
     const healthCheckResponse = getHealthCheckResponse()
     return res.send(healthCheckResponse)
   } catch (error) {
-    console.log('healthCheckService --- getHealthCheck --- error: ', error)
     return res.status(500).send(httpStatus[500])
   }
 }

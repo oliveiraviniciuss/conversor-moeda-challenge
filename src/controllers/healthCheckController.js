@@ -1,4 +1,5 @@
 const { httpStatus } = require('../helpers/httpResponses')
+const logger = require('../controllers/loggerController')
 
 const getHealthCheck = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ const getHealthCheck = async (req, res) => {
 }
 
 const getHealthCheckResponse = () => {
+  logger.info('healthCheckController -- getHealthCheckResponse')
   return {
     status: 'The API is working. No problems have been detected.',
     developed_by: 'Vinicius de Oliveira'

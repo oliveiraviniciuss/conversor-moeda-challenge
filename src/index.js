@@ -5,5 +5,5 @@ require('dotenv').config()
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {
-    logger.info(`Server listening in ${port} on development env`)
+  logger.info(`Server listening in ${port} on development env`)
 })

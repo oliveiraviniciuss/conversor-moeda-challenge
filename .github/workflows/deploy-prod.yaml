@@ -7,6 +7,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+      
+      - name: npm install
+        run: make install
 
       - name: Deploy Heroku
         uses: akhileshns/heroku-deploy@v3.12.12

@@ -9,3 +9,9 @@ test:
 
 itest:
 	npm run itest
+
+docker/build:
+	docker build -t node-api/conversor .
+
+docker/run:
+	docker run -d -p 3000:3000 -it node-api/conversor

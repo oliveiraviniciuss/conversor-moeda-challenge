@@ -3,6 +3,9 @@ lint-fix:
 
 lint:
 	npm run lint
-	
+
 test:
 	npm run test
+
+itest:
+	npm run itest

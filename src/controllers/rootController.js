@@ -13,7 +13,7 @@ const getRoot = async (req, res) => {
 const getRootResponse = () => {
   logger.info('rootController -- getRootResponse')
   return {
-    application: "Converter API"
+    application: 'Converter API'
   }
 }
 

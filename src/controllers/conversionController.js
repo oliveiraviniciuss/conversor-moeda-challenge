@@ -111,5 +111,10 @@ const valueToStoreInCache = (externalApiResponse, apiCurrencyFormat) => {
 }
 
 module.exports = {
-  getConversion
+  getConversion,
+  valueToStoreInCache,
+  getValidCurrenciesString,
+  getPricesFromQuotationsResponse,
+  getValidCurrenciesArr,
+  getUrlToRequest
 }

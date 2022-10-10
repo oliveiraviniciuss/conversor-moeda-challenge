@@ -1,0 +1,67 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Swagger Documentation",
+      "version": "v1.0.0",
+      "description": "Swagger Converter API"
+    },
+    "paths": {
+      "/conversion": {
+        "get": {
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Conversion API Route"
+          ],
+          "parameters": [
+            {
+            "name": "price",
+            "in": "query",
+            "description": "BRL value to convert",
+            "required": true,
+            "type": "number",
+            "example": 10.5 
+            },
+            {
+            "name": "currencies",
+            "in": "query",
+            "description": "Currencies to get check quotation and get price",
+            "required": true,
+            "type": "string",
+            "example": "USD,BRL,EUR"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Return a converted value to USD,INR or EUR currency.",
+              "examples": {
+                "application/json": "{\n    \"USD\": {\n        \"price\": \"5.124\"}}"
+              }
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      },
+      "/healthcheck": {
+        "get": {
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Healthcheck API Route"
+          ],
+          "responses": {
+            "200": {
+              "description": "A simple application healthcheck"
+            }
+          }
+        }
+      }
+    },
+    "consumes": [
+      "application/json"
+    ]
+  }

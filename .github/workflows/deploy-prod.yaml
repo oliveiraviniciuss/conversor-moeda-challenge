@@ -4,9 +4,9 @@ on:
 jobs:
   Deploy:
     runs-on: ubuntu-latest
-    steps:
       env:
         NODE_ENV: production
+    steps:
       - name: Checkout repo
         uses: actions/checkout@v3
       

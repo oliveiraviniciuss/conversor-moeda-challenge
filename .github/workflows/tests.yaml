@@ -13,8 +13,24 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Npm install
+        run: make install 
+
       - name: Running Unit Tests
         run: make test
+
+  integration-tests:
+      name: Integration Tests
+      needs:
+        - unit-tests
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Npm install
+        run: make install
 
       - name: Running Integration Tests
         run: make itest

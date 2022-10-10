@@ -15,3 +15,6 @@ docker/build:
 
 docker/run:
 	docker run -d -p 3000:3000 -it node-api/conversor
+
+install:
+	npm i
